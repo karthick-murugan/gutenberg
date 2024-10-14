@@ -69,6 +69,13 @@
 		},
 		"width": {
 			"type": "number"
+		},
+		"externalLink": {
+			"type": "string",
+			"default": "https://wordpress.org/documentation/article/buttons-block/"
+		},
+		"externalRel": {
+			"type": "string"
 		}
 	},
 	"supports": {

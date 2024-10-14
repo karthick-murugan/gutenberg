@@ -146,6 +146,35 @@ function WidthPanel( { selectedWidth, setAttributes } ) {
 	);
 }
 
+function ExternalLink( { destination, children, className, externalRel = '', ...props }, ref ) {
+    const optimizedRel = [ ...new Set([ ...externalRel.split(' '), 'external', 'noreferrer', 'noopener' ].filter(Boolean)) ].join(' ');
+    const classes = clsx('components-external-link', className);
+    const isInternalAnchor = !!destination?.startsWith('#');
+    
+    const onClickHandler = (event) => {
+        if (isInternalAnchor) event.preventDefault();
+        if (props.onClick) props.onClick(event);
+    };
+
+    return (
+        <a
+            {...props}
+            className={classes}
+            href={destination}
+            onClick={onClickHandler}
+            target="_blank"
+            rel={optimizedRel}
+            ref={ref}
+        >
+            <span className="components-external-link__contents">{children}</span>
+            <span className="components-external-link__icon" aria-label={__('(opens in a new tab)')}>
+                &#8599;
+            </span>
+        </a>
+    );
+}
+
+
 function ButtonEdit( props ) {
 	const {
 		attributes,
@@ -168,6 +197,8 @@ function ButtonEdit( props ) {
 		url,
 		width,
 		metadata,
+		externalLink = '',
+		externalRel,
 	} = attributes;
 
 	const TagName = tagName || 'a';
@@ -371,6 +402,13 @@ function ButtonEdit( props ) {
 					</Popover>
 				) }
 			<InspectorControls>
+				<PanelBody>
+				{ externalLink && (
+					<ExternalLink destination={externalLink} className rel={externalRel}>
+						{__('Visit the link')}
+					</ExternalLink>
+				)}
+				</PanelBody>
 				<WidthPanel
 					selectedWidth={ width }
 					setAttributes={ setAttributes }
